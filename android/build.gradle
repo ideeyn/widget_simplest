@@ -1,0 +1,38 @@
+buildscript {
+    ext.kotlin_version = '1.9.0'
+    ext { // [required] by background_fetch library
+       compileSdkVersion   = 33
+       targetSdkVersion    = 33
+       appCompatVersion    = "1.4.2"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // [required] by background_fetch library
+        maven { url "${project(':background_fetch').projectDir}/libs" }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
